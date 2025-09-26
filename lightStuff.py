@@ -1,11 +1,18 @@
 from gpiozero import LED # needed to control the LED (laser)
 import time # needed for sleep function
 
+import board # needed for neopixels
+import neopixel # needed for neopixels
+
 
 class LightStuff:
-    def __init__(self, pin):
-        self.led = LED(pin) # create an LED object on the specified pin
+    def __init__(self, laser_pin=23, neopixel_pin=18, num_pixels=7):
+        self.led = LED(laser_pin) # create an LED object on the specified pin
         self.turn_off() # ensure the LED is off initially
+
+        self.pixels = neopixel.NeoPixel(board.D18, num_pixels, brightness=1, auto_write=True, pixel_order=neopixel.RGBW)
+        self.pixels.fill((0, 0, 0, 0))  # Turn off all pixels initially
+        self.pixels.show()
 
         self.morse_code_dict = { 'A':'.-', 'B':'-...',
                     'C':'-.-.', 'D':'-..', 'E':'.',
@@ -72,12 +79,16 @@ class LightStuff:
             for symbol in morse_code:
                 if symbol == '.':
                     self.turn_on()
+                    self.pixels.fill((0, 0, 255, 0))  # Blue for dot
                     time.sleep(dot_duration)
                     self.turn_off()
+                    self.pixels.fill((0, 0, 0, 0))  # Turn off pixels
                 elif symbol == '-':
                     self.turn_on()
+                    self.pixels.fill((255, 0, 0, 0))  # Red for dash
                     time.sleep(dash_duration)
                     self.turn_off()
+                    self.pixels.fill((0, 0, 0, 0))  # Turn off pixels
                 time.sleep(intra_char_space) # space between symbols
 
             time.sleep(inter_char_space - intra_char_space) # space between characters
@@ -85,4 +96,7 @@ class LightStuff:
 if __name__ == "__main__":
     light = LightStuff(pin=26) # create a LightStuff object on GPIO pin 26
     light.blink(on_time=0.5, off_time=0.5, n=3) # blink the LED 3 times
-    light.send_morse_code("HELLO WORLD", dot_duration=0.2) # send "HELLO WORLD" in Morse code
+
+    while True:
+        message = input("Enter a message to send in Morse code: ")
+        light.send_morse_code(message, dot_duration=0.2) # send message in Morse code
