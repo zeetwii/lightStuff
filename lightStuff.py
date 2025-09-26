@@ -10,7 +10,7 @@ class LightStuff:
         self.led = LED(laser_pin) # create an LED object on the specified pin
         self.turn_off() # ensure the LED is off initially
 
-        self.pixels = neopixel.NeoPixel(board.D18, num_pixels, brightness=1, auto_write=True, pixel_order=neopixel.RGBW)
+        self.pixels = neopixel.NeoPixel(board.D18, num_pixels, brightness=1, auto_write=True, pixel_order=neopixel.GRBW)
         self.pixels.fill((0, 0, 0, 0))  # Turn off all pixels initially
         self.pixels.show()
 
