@@ -94,7 +94,7 @@ class LightStuff:
             time.sleep(inter_char_space - intra_char_space) # space between characters
     
 if __name__ == "__main__":
-    light = LightStuff(pin=26) # create a LightStuff object on GPIO pin 26
+    light = LightStuff() # create a LightStuff object on GPIO pin 26
     light.blink(on_time=0.5, off_time=0.5, n=3) # blink the LED 3 times
 
     while True:
